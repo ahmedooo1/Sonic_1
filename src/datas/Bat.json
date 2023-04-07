@@ -1,0 +1,7 @@
+[
+{"name":"sprite1","x":0,"y":0,"width":32,"height":39},
+{"name":"sprite2","x":32,"y":0,"width":32,"height":39},
+{"name":"sprite3","x":64,"y":0,"width":32,"height":39},
+{"name":"sprite4","x":96,"y":0,"width":32,"height":39},
+{"name":"sprite5","x":0,"y":39,"width":32,"height":39}
+]

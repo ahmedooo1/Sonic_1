@@ -9,9 +9,13 @@ export default class Eggman {
     bomb_exist;
     pv;
     invincibility;
+    nbBombM;
+    velocity;
 
     //CONSTRUCTEUR
-    constructor(main, x, y) {
+    constructor(main, x, y, velocity) {
+        this.velocity = velocity;
+        this.nbBombM = 15;
         this.invincibility = false;
         this.pv = 3;
         this.main = main;
@@ -38,10 +42,10 @@ export default class Eggman {
     collision(player,main,eggmanSound){ 
         //la hitbox de contact suis eggman
         this.hitbox_D.x = this.eggman.x;
-        this.hitbox_D.y = this.eggman.y;
+        this.hitbox_D.y = this.eggman.y+5;
         //la hitbox de dégats suis eggman
         this.hitbox_G.x = this.eggman.x;
-        this.hitbox_G.y = this.eggman.y-31;
+        this.hitbox_G.y = this.eggman.y-24;
         //gestion des collision
         main.physics.add.collider(player, this.hitbox_D, function (player){
             //sonic est blessé -- on envoie le signal RED
@@ -116,7 +120,7 @@ export default class Eggman {
             }
         }
         else { //EGMAN NORMAL
-            var velocity = 50; //la vitesse de base d'eggman
+            //var velocity = 50; //la vitesse de base d'eggman
             var marge = 100; //la hauter de différence que eggman veut
 
             //on recupere les coordonnes du joueur
@@ -129,12 +133,12 @@ export default class Eggman {
             //LES DEPLACEMENTS HORIZONTAUX
             //le joueur est à la droite d'eggman
             if(eggX < pX){
-                this.eggman.setVelocityX(velocity);
+                this.eggman.setVelocityX(this.velocity);
                 this.eggman.flipX = true;
             }
             //le joueur est à la gauche d'eggman
             else if (eggX > pX){
-                this.eggman.setVelocityX(-velocity);
+                this.eggman.setVelocityX(-this.velocity);
                 if (this.eggman.flipX == true){     
                     this.eggman.flipX = false;
                 }
@@ -147,11 +151,11 @@ export default class Eggman {
             //LES DEPLACEMENTS VERTICAUX
             //le joueur sous eggman
             if(eggY < (pY - marge)){
-                this.eggman.setVelocityY(velocity);
+                this.eggman.setVelocityY(this.velocity);
             }
             //le joueur au dessus d'eggman
             else if (eggY > (pY - marge)){
-                this.eggman.setVelocityY(-velocity);
+                this.eggman.setVelocityY(-this.velocity);
             }
             //le joueur est sous eggman
             else if (eggY == (pY - marge)){
@@ -165,17 +169,18 @@ export default class Eggman {
         this.eggman.setCollideWorldBounds(true);
         var eggY = Math.round(this.eggman.y);
         var eggX = Math.round(this.eggman.x);
-        var velo = 200;
+        this.velocity = 250;
+
         //AJOUT DE ZQSD
         cursors = main.input.keyboard.addKeys({E_bomb:Phaser.Input.Keyboard.KeyCodes.F,E_up:Phaser.Input.Keyboard.KeyCodes.Z,E_down:Phaser.Input.Keyboard.KeyCodes.S,E_left:Phaser.Input.Keyboard.KeyCodes.Q,E_right:Phaser.Input.Keyboard.KeyCodes.D});
         //GAUCHE
-        if(cursors.E_left.isDown){this.eggman.body.setVelocityX(-velo);if (this.eggman.flipX == true){    this.eggman.flipX = false;}}
+        if(cursors.E_left.isDown){this.eggman.body.setVelocityX(-this.velocity);if (this.eggman.flipX == true){    this.eggman.flipX = false;}}
         // DROITE
-        if(cursors.E_right.isDown){this.eggman.body.setVelocityX(velo);if (this.eggman.flipX == false){     this.eggman.flipX = true;}}
+        if(cursors.E_right.isDown){this.eggman.body.setVelocityX(this.velocity);if (this.eggman.flipX == false){     this.eggman.flipX = true;}}
         //HAUT 
-        if(cursors.E_up.isDown){this.eggman.body.setVelocityY(-velo);} 
+        if(cursors.E_up.isDown){this.eggman.body.setVelocityY(-this.velocity);} 
         //BAS
-        if(cursors.E_down.isDown){this.eggman.body.setVelocityY(velo);}
+        if(cursors.E_down.isDown){this.eggman.body.setVelocityY(this.velocity);}
         //IMMOBILE X
         if(!cursors.E_left.isDown && !cursors.E_right.isDown){
             this.eggman.body.setVelocityX(0);
@@ -185,9 +190,10 @@ export default class Eggman {
             this.eggman.body.setVelocityY(0);
         }
         //LANCER UNE BOMBE 
-        if(cursors.E_bomb.isDown && this.bomb_exist == false){
+        if(cursors.E_bomb.isDown && this.bomb_exist == false && this.nbBombM > 0){
             this.bomb_exist = true;
             this.bomb = main.physics.add.sprite(eggX+5, eggY, 'Bomb');
+            this.nbBombM --;
             this.bomb.play("Bombe_tourne");
             this.bomb.setCollideWorldBounds(true);
             //CONTACT DE LA BOMBE AVEC SONIC

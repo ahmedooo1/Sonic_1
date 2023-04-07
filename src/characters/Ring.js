@@ -20,7 +20,7 @@ export default class Sonic {
         var tiledX = Math.round(player.x);
         var tiledY = Math.round(player.y);
         //JOUEUR ET ANNEAUX PLUS OU MOINS AUX MÊMES COORDONNÉES -- tolérance de 10
-        var tol = 40; //TOLERANCE
+        var tol = 20; //TOLERANCE
         if (this.etat == "exist" && this.PosX - tol < tiledX && tiledX < this.PosX + tol && this.PosY - tol < tiledY && tiledY < this.PosY + tol ){
             this.etat = "recolté";
             this.ring.visible = false;
